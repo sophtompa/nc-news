@@ -1,5 +1,5 @@
 const {
-  convertTimestampToDate
+  convertTimestampToDate, lookUp
 } = require("../db/seeds/utils");
 
 describe("convertTimestampToDate", () => {
@@ -38,3 +38,61 @@ describe("convertTimestampToDate", () => {
   });
 });
 
+describe("lookUp", () => {
+  test("returns an object", () => {
+      //Arrange
+      const input = []
+      //Act
+      const actual = lookUp(input)
+      //Assert
+      expect(actual).toEqual({})
+  });
+  test("returns a single key:value pair for an array with one object", () => {
+      //Arrange
+      const input = [
+        { article_title: "They're not exactly dogs, are they?",
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 16,
+          author: "butter_bridge",
+          created_at: 1586179020000,
+          article_id: 1
+        } ]
+      //Act
+      const actual = lookUp(input)
+      //Assert
+      expect(actual).toEqual({"They're not exactly dogs, are they?": 1})
+  });
+  test("returns multiple key:value pairs when passed an array with multiple objects", () => {
+      //Arrange
+      const input = 
+      [
+        {
+          article_title: "They're not exactly dogs, are they?",
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 16,
+          author: "butter_bridge",
+          created_at: 1586179020000,
+          article_id: 1
+        },
+        {
+          article_title: "Living in the shadow of a great man",
+          body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          votes: 14,
+          author: "butter_bridge",
+          created_at: 1604113380000,
+          article_id: 2
+        },
+        {
+          article_title: "Living in the shadow of a great man",
+          body: "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+          votes: 100,
+          author: "icellusedkars",
+          created_at: 1583025180000,
+          article_id: 2
+        },]
+      //Act
+      const actual = lookUp(input)
+      //Assert
+      expect(actual).toEqual({"Living in the shadow of a great man": 2, "They're not exactly dogs, are they?": 1})
+  })
+});
