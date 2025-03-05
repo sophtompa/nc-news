@@ -89,7 +89,7 @@ function createTables({ topicData, userData, articleData, commentData }) {
     return db.query(
       `CREATE TABLE comments (
       comment_id SERIAL PRIMARY KEY NOT NULL,
-      article_id INT NOT NULL,
+      article_id INT REFERENCES articles(article_id),
       body TEXT NOT NULL,
       votes INT,
       author VARCHAR(300) REFERENCES users(username),
