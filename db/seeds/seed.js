@@ -101,15 +101,29 @@ function createTables({ topicData, userData, articleData, commentData }) {
   })
   //Format and insert comments data
   .then(({ rows }) => {
-    const lookUpVar = lookUp(rows)
-    const formattedCommentsData = commentData.map(convertTimestampToDate)
-    const formattedComments = formattedCommentsData.map(({article_id, body, votes, author, created_at}) => {
-      return [lookUpVar[article_id], body, votes, author, created_at]
+    //Creating object of article title and ids, for each looping over each article, for every title, it has a corresponding id
+    const articleTitleIds = {}
+    rows.forEach((article) => {
+      articleTitleIds[article.title] = article.article_id
     })
+    console.log(articleTitleIds)
+
+    const formattedComments = commentData.map((commentData) => {
+      const convertTime = convertTimestampToDate(commentData)
+      const articleId = articleTitleIds[commentData.article_title]
+      return [articleId, commentData.body, commentData.votes, commentData.author, convertTime.created_at]
+    })
+    // const lookUpVar = lookUp(rows)
+    // const formattedCommentsData = commentData.map(convertTimestampToDate)
+    // const formattedComments = formattedCommentsData.map(({article_id, body, votes, author, created_at}) => {
+    //   return [lookUpVar[article_id], body, votes, author, created_at]
     const insert = format(
       `INSERT INTO comments(article_id, body, votes, author, created_at) VALUES %L RETURNING *`, formattedComments
     );
-    return db.query(insert);
+    return db.query(insert)
+    .then(({rows}) => {
+      console.log(rows)
+    })
   })
 };
 
