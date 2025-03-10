@@ -2,14 +2,16 @@ const handlePsqlError = (err, req, res, next) => {
     if(err.code === '22P02') {
         res.status(400).send({msg: 'bad request'})
     }
-    next(err);
+    else {
+    next(err); }
 };
 
 const handleCustomError = (err, req, res, next) => {
     if(err.status) {
         res.status(err.status).send({msg: err.msg})
     }
-    next(err);
+    else {
+    next(err); }
 }
 
 

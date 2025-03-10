@@ -9,7 +9,7 @@ beforeEach(() => {
   return seed(data);
 });
 afterAll(() => {
-  db.end();
+  return db.end();
 });
 
 describe("GET /api", () => {
@@ -44,8 +44,6 @@ describe('GET: /api/topics', () => {
 });
 
 
-
-//General Errors, 404: path not found, PSQL errors, custom error, server error
 
 describe('404: return path not found for any non-specified url', () => {
   test('404: path not found', () => {
