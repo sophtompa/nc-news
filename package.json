@@ -10,7 +10,7 @@
     "prepare": "husky install",
     "start": "node listen.js",
     "test-seed": "jest seed.test.js",
-    "utils-test":  "jest utils.test.js"
+    "utils-test": "jest utils.test.js"
   },
   "repository": {
     "type": "git",
@@ -24,9 +24,11 @@
   },
   "homepage": "https://github.com/northcoders/be-nc-news#readme",
   "devDependencies": {
+    "express": "^4.21.2",
     "husky": "^8.0.2",
     "jest": "^27.5.1",
-    "jest-extended": "^2.0.0"
+    "jest-extended": "^2.0.0",
+    "supertest": "^7.0.0"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
