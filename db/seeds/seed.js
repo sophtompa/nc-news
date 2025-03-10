@@ -106,7 +106,6 @@ function createTables({ topicData, userData, articleData, commentData }) {
     rows.forEach((article) => {
       articleTitleIds[article.title] = article.article_id
     })
-    console.log(articleTitleIds)
 
     const formattedComments = commentData.map((commentData) => {
       const convertTime = convertTimestampToDate(commentData)
@@ -122,7 +121,6 @@ function createTables({ topicData, userData, articleData, commentData }) {
     );
     return db.query(insert)
     .then(({rows}) => {
-      console.log(rows)
     })
   })
 };
