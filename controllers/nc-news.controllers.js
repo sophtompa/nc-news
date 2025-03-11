@@ -1,5 +1,5 @@
 const endpoints = require("../endpoints.json")
-const {fetchTopics, fetchArticleById} = require("../models/nc-news.models")
+const {fetchTopics, fetchArticles, fetchArticleById} = require("../models/nc-news.models")
 
 const getEndpoints = (req, res) => {
     return res.status(200).send({endpoints});
@@ -9,6 +9,16 @@ const getTopics = (req, res, next) => {
     
     fetchTopics().then((topics) => {
         res.status(200).send({topics})
+    })
+    .catch((err) => {
+        next(err);
+    })
+};
+
+const getArticles = (req, res, next) => {
+    
+    fetchArticles().then((articles) => {
+        res.status(200).send({articles})
     })
     .catch((err) => {
         next(err);
@@ -37,4 +47,4 @@ const pathNotFound = (req, res, next) => {
 };
 
 
-module.exports = { getEndpoints, getTopics, getArticleById, pathNotFound }
+module.exports = { getEndpoints, getTopics, getArticles, getArticleById, pathNotFound }
