@@ -64,6 +64,22 @@ describe("GET: /api/articles/:article_id", () => {
         )
       });
   });
+  test('400: responds with bad request', () => {
+    return request(app)
+      .get('/api/articles/banana')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('bad request');
+      });
+  });
+  test('404: id not found', () => {
+    return request(app)
+      .get('/api/articles/999999')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('id not found');
+      });
+  });
 });
 
 
