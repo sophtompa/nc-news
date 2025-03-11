@@ -112,6 +112,61 @@ describe("GET: /api/articles/:article_id", () => {
   });
 });
 
+describe("GET: /api/articles/:article_id/comments", () => {
+  test('200: responds with an array of comment objects from the article with the corresponsing id, where comment count > 0', () => {
+    return request(app)
+    .get('/api/articles/3/comments')
+    .expect(200)
+    .then(({body}) => {
+      const { comments } = body;
+      if(comments.length != 0) {
+      comments.forEach((comment) => {
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: 3,
+          })
+        )
+      })}
+      else{ 
+        expect(comments).toEqual({})
+      }
+      });
+  });
+  // test('200: responds with an array of comment objects from the article with the corresponsing id, where comment count = 0', () => {
+  //   return request(app)
+  //   .get('/api/articles/2/comments')
+  //   .expect(200)
+  //   .then(({body}) => {
+  //     const { comments } = body;
+  //       expect(comments.length).toEqual(1)
+  //       expect(comments).toEqual([{msg: "this article has no comments"}])
+  //     })
+      // });
+  test('400: responds with bad request', () => {
+    return request(app)
+      .get('/api/articles/banana/comments')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('bad request');
+      });
+  });
+  test('404: id not found', () => {
+    return request(app)
+      .get('/api/articles/999999/comments')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('id not found');
+      });
+  });
+
+  });
+
+
 describe('404: return path not found for any non-specified url', () => {
   test('404: path not found', () => {
     return request(app)

@@ -22,4 +22,11 @@ const fetchArticleById = (id) => {
     });
 };
 
-module.exports = { fetchTopics, fetchArticles, fetchArticleById }
+const fetchCommentsByArticleId = (id) => {
+    return db.query(`SELECT * FROM comments WHERE article_id = $1`, [id])
+    .then(({rows}) => {
+        return rows;
+    })
+}
+
+module.exports = { fetchTopics, fetchArticles, fetchArticleById, fetchCommentsByArticleId }
