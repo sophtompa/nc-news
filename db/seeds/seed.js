@@ -1,17 +1,17 @@
 const db = require("../connection")
 const format = require("pg-format");
-const { convertTimestampToDate, lookUp } = require("./utils");
+const { convertTimestampToDate } = require("./utils");
 
 const seed = ({ topicData, userData, articleData, commentData }) => {
-  return db.query("DROP TABLE IF EXISTS comments;")
+  return db.query("DROP TABLE IF EXISTS comments CASCADE;")
   .then (() => {
-    return db.query("DROP TABLE IF EXISTS articles;");
+    return db.query("DROP TABLE IF EXISTS articles CASCADE;");
   })
   .then (() => {
-    return db.query("DROP TABLE IF EXISTS users;");
+    return db.query("DROP TABLE IF EXISTS users CASCADE;");
   })
   .then (() => {
-    return db.query("DROP TABLE IF EXISTS topics;");
+    return db.query("DROP TABLE IF EXISTS topics CASCADE;");
   })
   .then(() => {
     return createTables({ topicData, userData, articleData, commentData });
@@ -112,10 +112,7 @@ function createTables({ topicData, userData, articleData, commentData }) {
       const articleId = articleTitleIds[commentData.article_title]
       return [articleId, commentData.body, commentData.votes, commentData.author, convertTime.created_at]
     })
-    // const lookUpVar = lookUp(rows)
-    // const formattedCommentsData = commentData.map(convertTimestampToDate)
-    // const formattedComments = formattedCommentsData.map(({article_id, body, votes, author, created_at}) => {
-    //   return [lookUpVar[article_id], body, votes, author, created_at]
+   
     const insert = format(
       `INSERT INTO comments(article_id, body, votes, author, created_at) VALUES %L RETURNING *`, formattedComments
     );

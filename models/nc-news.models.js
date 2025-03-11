@@ -8,4 +8,11 @@ const fetchTopics = () => {
     })
 };
 
-module.exports = { fetchTopics }
+const fetchArticleById = (id) => {
+    return db.query(`SELECT * FROM articles WHERE article_id = $1`, [id])
+    .then(({rows}) => {
+        return rows;
+    });
+};
+
+module.exports = { fetchTopics, fetchArticleById }

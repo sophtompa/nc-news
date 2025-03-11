@@ -43,6 +43,52 @@ describe('GET: /api/topics', () => {
   });
 });
 
+describe("GET: /api/articles/:article_id", () => {
+  test('200: responds with an object of an article with the corresponsing id', () => {
+    return request(app)
+    .get('/api/articles/2')
+    .expect(200)
+    .then(({body}) => {
+      const { article } = body;
+        expect(article).toEqual(
+          expect.objectContaining({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: 2,
+            body: expect.any(String),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+          })
+        )
+      });
+  });
+  test('400: responds with bad request', () => {
+    return request(app)
+      .get('/api/articles/banana')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('bad request');
+      });
+  });
+  test('404: id not found', () => {
+    return request(app)
+      .get('/api/articles/999999')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('id not found');
+      });
+  });
+});
+
+
+
+
+
+
+
+
 
 
 describe('404: return path not found for any non-specified url', () => {
