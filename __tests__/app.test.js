@@ -43,6 +43,36 @@ describe('GET: /api/topics', () => {
   });
 });
 
+describe('GET: /api/articles', () => {
+  test('200: responds with an array of articles objects', () => {
+    return request(app)
+    .get('/api/articles')
+    .expect(200)
+    .then(({body}) => {
+      const { articles } = body;
+      const articlesSorted = articles.toSorted((a, b) => {
+        return b.created_at - a.created_at
+      })
+      expect(articles).toEqual(articlesSorted)
+      articles.forEach((article) => {
+        expect(article).toEqual(
+          expect.objectContaining({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(Number),
+          })
+        )
+      })
+      expect(articles.length).not.toBe(0)
+    })
+  });
+});
+
 describe("GET: /api/articles/:article_id", () => {
   test('200: responds with an object of an article with the corresponsing id', () => {
     return request(app)
@@ -81,15 +111,6 @@ describe("GET: /api/articles/:article_id", () => {
       });
   });
 });
-
-
-
-
-
-
-
-
-
 
 describe('404: return path not found for any non-specified url', () => {
   test('404: path not found', () => {
