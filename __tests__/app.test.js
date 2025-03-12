@@ -118,8 +118,13 @@ describe("GET: /api/articles/:article_id/comments", () => {
     .get('/api/articles/3/comments')
     .expect(200)
     .then(({body}) => {
+      console.log(body)
       const { comments } = body;
-      if(comments.length != 0) {
+      const commentsSorted = comments.toSorted((a, b) => {
+        return b.created_at - a.created_at
+      })
+      expect(comments).toEqual(commentsSorted)
+      console.log(comments)
       comments.forEach((comment) => {
         expect(comment).toEqual(
           expect.objectContaining({
@@ -131,22 +136,17 @@ describe("GET: /api/articles/:article_id/comments", () => {
             article_id: 3,
           })
         )
-      })}
-      else{ 
-        expect(comments).toEqual({})
-      }
+      })
       });
   });
-  // test('200: responds with an array of comment objects from the article with the corresponsing id, where comment count = 0', () => {
-  //   return request(app)
-  //   .get('/api/articles/2/comments')
-  //   .expect(200)
-  //   .then(({body}) => {
-  //     const { comments } = body;
-  //       expect(comments.length).toEqual(1)
-  //       expect(comments).toEqual([{msg: "this article has no comments"}])
-  //     })
-      // });
+  test('200: responds with a message of "article has no comments" when the comment count = 0', () => {
+    return request(app)
+    .get('/api/articles/2/comments')
+    .expect(200)
+    .then(({body}) => {
+      expect(body.msg).toBe("This article has no comments")
+    });
+  })
   test('400: responds with bad request', () => {
     return request(app)
       .get('/api/articles/banana/comments')
@@ -160,7 +160,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
       .get('/api/articles/999999/comments')
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe('id not found');
+        expect(body.msg).toBe('Article not found');
       });
   });
 

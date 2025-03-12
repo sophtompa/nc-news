@@ -45,11 +45,11 @@ const getCommentsByArticleId = (req, res, next) => {
     const { article_id } = req.params;
 
     fetchCommentsByArticleId(article_id).then((comments) => {
-    //if comments = 0 ?
-
-        if (comments.length === 0) {
-            return Promise.reject({ status: 404, msg: 'id not found' })}
-        else { res.status(200).send({comments})}
+        if(comments.length === 0) {
+            res.status(200).send({msg: "This article has no comments"})
+        }
+        else {
+     res.status(200).send({comments})}
     })
     .catch((err) => {
         next(err);

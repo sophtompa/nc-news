@@ -23,10 +23,18 @@ const fetchArticleById = (id) => {
 };
 
 const fetchCommentsByArticleId = (id) => {
-    return db.query(`SELECT * FROM comments WHERE article_id = $1`, [id])
+    return db.query(`SELECT * FROM articles WHERE article_id = $1`, [id])
     .then(({rows}) => {
-        return rows;
+    if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Article not found" });
+    } 
+    else {
+        return db.query(`SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC`, [id])
+    }
     })
-}
+    .then(({rows}) => {
+        return rows; 
+    })}
+
 
 module.exports = { fetchTopics, fetchArticles, fetchArticleById, fetchCommentsByArticleId }
