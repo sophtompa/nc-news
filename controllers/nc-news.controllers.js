@@ -1,5 +1,5 @@
 const endpoints = require("../endpoints.json")
-const {fetchTopics, fetchArticles, fetchArticleById, fetchCommentsByArticleId, sendComment, updateArticle } = require("../models/nc-news.models")
+const {fetchTopics, fetchArticles, fetchArticleById, fetchCommentsByArticleId, sendComment, updateArticle, removeComment } = require("../models/nc-news.models")
 
 const getEndpoints = (req, res) => {
     return res.status(200).send({endpoints});
@@ -49,7 +49,7 @@ const getCommentsByArticleId = (req, res, next) => {
             res.status(200).send({msg: "This article has no comments"})
         }
         else {
-     res.status(200).send({comments})}
+    res.status(200).send({comments})}
     })
     .catch((err) => {
         next(err);
@@ -80,10 +80,18 @@ const patchArticle = (req, res, next) => {
     })
 }
 
+const deleteComment = (req, res, next) => {
+    const { comment_id } = req.params;
+    removeComment(comment_id).then((rows) => {
+        return res.status(204).send(rows)
+    })
+    .catch((err) => {
+        next(err);
+    })
+}
 
 const pathNotFound = (req, res, next) => {
     res.status(404).send({ msg: 'path not found' });
 };
 
-
-module.exports = { getEndpoints, getTopics, getArticles, getArticleById, getCommentsByArticleId, postComment, patchArticle, pathNotFound }
+module.exports = { getEndpoints, getTopics, getArticles, getArticleById, getCommentsByArticleId, postComment, patchArticle, deleteComment, pathNotFound }
