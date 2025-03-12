@@ -254,6 +254,34 @@ describe("PATCH: /api/articles/:article_id", () => {
 });
 });
 
+describe('DELETE: /api/comments/:comment_id', () => {
+  test('204: deletes comment with corresponding comment id, returns status 204 with no content', () => {
+    return request(app)
+    .delete('/api/comments/5')
+    .expect(204)
+    .then(({body}) => {
+      expect(body).toBeEmpty()
+    })
+  })
+  test('400: responds with bad request, wrong data type for comment_id', () => {
+    return request(app)
+      .delete('/api/comments/banana')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('bad request');
+      });
+  });
+  test('404: comment id not found', () => {
+    return request(app)
+      .delete('/api/comments/999999')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Comment not found');
+      });
+});
+})
+
+
 
 describe('404: return path not found for any non-specified url', () => {
   test('404: path not found', () => {
