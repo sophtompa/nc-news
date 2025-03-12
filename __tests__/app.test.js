@@ -145,7 +145,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
       expect(body.msg).toBe("This article has no comments")
     });
   })
-  test('400: responds with bad request', () => {
+  test('400: responds with bad request, wrong data type for article_id', () => {
     return request(app)
       .get('/api/articles/banana/comments')
       .expect(400)
@@ -153,7 +153,7 @@ describe("GET: /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe('bad request');
       });
   });
-  test('404: id not found', () => {
+  test('404: article id not found', () => {
     return request(app)
       .get('/api/articles/999999/comments')
       .expect(404)
@@ -173,12 +173,11 @@ describe("POST: /api/articles/:article_id/comments", () => {
     })
     .expect(201)
     .then(({ body }) => {
-      console.log(body)
         expect(body).toEqual(
           expect.objectContaining({
             comment: {
-            comment_id: expect.any(Number),
-            votes: expect.any(Number),
+            comment_id: 19,
+            votes: 0,
             created_at: expect.any(String),
             author: "butter_bridge",
             body: "newComment",
@@ -187,25 +186,73 @@ describe("POST: /api/articles/:article_id/comments", () => {
         )
   })
   })
-  test('400: responds with bad request', () => {
+  test('400: responds with bad request, wrong data type for article_id', () => {
     return request(app)
-      .get('/api/articles/banana/comments')
+      .post('/api/articles/banana/comments')
+      .send ({
+        username: "butter_bridge",
+        body: "newComment"
+      })
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe('bad request');
       });
   });
-  test('404: id not found', () => {
+  test('404: article id not found', () => {
     return request(app)
-      .get('/api/articles/999999/comments')
+      .post('/api/articles/999999/comments')
+      .send ({
+        username: "butter_bridge",
+        body: "newComment"
+      })
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe('Article not found');
       });
   });
-})
+});
 
-
+describe("PATCH: /api/articles/:article_id", () => {
+  test("200: responds with article with updated vote count", () => {
+    return request(app)
+    .patch('/api/articles/6')
+    .send({inc_votes: 10})
+    .expect(200)
+    .then(({body}) => {
+      const { article } = body
+      expect(article).toEqual(
+        expect.objectContaining({
+            title: "A",
+            topic: "mitch",
+            author: "icellusedkars",
+            body: "Delicious tin of cat food",
+            created_at: expect.any(String),
+            votes: 10,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        })
+      )
+    })
+  });
+  test('400: responds with bad request, wrong data type for article_id', () => {
+    return request(app)
+      .patch('/api/articles/banana')
+      .send ({ inc_votes: 10 })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('bad request');
+      });
+  });
+  test('404: article id not found', () => {
+    return request(app)
+      .patch('/api/articles/999999')
+      .send ({ inc_votes: 10 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Article not found');
+      });
+});
+});
 
 
 describe('404: return path not found for any non-specified url', () => {
