@@ -91,7 +91,7 @@ function createTables({ topicData, userData, articleData, commentData }) {
       comment_id SERIAL PRIMARY KEY NOT NULL,
       article_id INT REFERENCES articles(article_id),
       body TEXT NOT NULL,
-      votes INT,
+      votes INT DEFAULT 0,
       author VARCHAR(300) REFERENCES users(username),
       created_at TIMESTAMP);`
     )

@@ -54,5 +54,19 @@
       "created_at": "1586179020000"
       }
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts and returns a comment posted to an article with corresponding id",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 1,
+        "votes": 0,
+        "created_at": "1586179020000",
+        "author": "butter_bridge",
+        "body": "newComment",
+        "article_id": 5
+      }
+    }
   }
 }
