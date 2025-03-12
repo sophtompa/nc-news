@@ -1,5 +1,5 @@
 const endpoints = require("../endpoints.json")
-const {fetchTopics, fetchArticles, fetchArticleById, fetchCommentsByArticleId} = require("../models/nc-news.models")
+const {fetchTopics, fetchArticles, fetchArticleById, fetchCommentsByArticleId, sendComment } = require("../models/nc-news.models")
 
 const getEndpoints = (req, res) => {
     return res.status(200).send({endpoints});
@@ -54,7 +54,19 @@ const getCommentsByArticleId = (req, res, next) => {
     .catch((err) => {
         next(err);
     })
+}
 
+const postComment = (req,res, next) => {
+    const { article_id } = req.params;
+    const { username, body } = req.body;
+
+    sendComment(article_id, username, body).then((comment) => {
+        console.log(comment)
+        return res.status(201).send({comment: comment});
+    })
+    .catch((err) => {
+        next(err);
+    })
 }
 
 
@@ -63,4 +75,4 @@ const pathNotFound = (req, res, next) => {
 };
 
 
-module.exports = { getEndpoints, getTopics, getArticles, getArticleById, getCommentsByArticleId, pathNotFound }
+module.exports = { getEndpoints, getTopics, getArticles, getArticleById, getCommentsByArticleId, postComment, pathNotFound }

@@ -118,13 +118,11 @@ describe("GET: /api/articles/:article_id/comments", () => {
     .get('/api/articles/3/comments')
     .expect(200)
     .then(({body}) => {
-      console.log(body)
       const { comments } = body;
       const commentsSorted = comments.toSorted((a, b) => {
         return b.created_at - a.created_at
       })
       expect(comments).toEqual(commentsSorted)
-      console.log(comments)
       comments.forEach((comment) => {
         expect(comment).toEqual(
           expect.objectContaining({
@@ -163,8 +161,51 @@ describe("GET: /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe('Article not found');
       });
   });
+});
 
+describe("POST: /api/articles/:article_id/comments", () => {
+  test("201: responds with a posted comment", () => {
+    return request(app)
+    .post('/api/articles/5/comments')
+    .send ({
+      username: "butter_bridge",
+      body: "newComment"
+    })
+    .expect(201)
+    .then(({ body }) => {
+      console.log(body)
+        expect(body).toEqual(
+          expect.objectContaining({
+            comment: {
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: "butter_bridge",
+            body: "newComment",
+            article_id: 5
+          }})
+        )
+  })
+  })
+  test('400: responds with bad request', () => {
+    return request(app)
+      .get('/api/articles/banana/comments')
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe('bad request');
+      });
   });
+  test('404: id not found', () => {
+    return request(app)
+      .get('/api/articles/999999/comments')
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe('Article not found');
+      });
+  });
+})
+
+
 
 
 describe('404: return path not found for any non-specified url', () => {
