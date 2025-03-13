@@ -288,6 +288,7 @@ describe('GET: /api/users', () => {
     .expect(200)
     .then(({body}) => {
       const { users } = body;
+      expect(users.length).not.toBe(0)
       users.forEach((user) => {
         expect(user).toEqual(
           expect.objectContaining({
@@ -297,7 +298,7 @@ describe('GET: /api/users', () => {
           })
         )
       })
-      expect(users.length).not.toBe(0)
+      
     })
   });
 });
