@@ -302,6 +302,45 @@ describe('GET: /api/users', () => {
   });
 });
 
+describe('GET: /api/articles?', () => {
+  test('200: responds with an array of articles sorted by column with number values (article_id)', () => {
+    return request(app)
+    .get('/api/articles?sort_by=article_id')
+    .expect(200)
+    .then(({ body }) => {
+      const { articles } = body;
+      const articlesSorted = articles.toSorted((a, b) => {
+        return b.article_id - a.article_id;
+      });
+      expect(articles).toEqual(articlesSorted);
+    });
+  })
+  test('200: responds with an array of articles sorted by column with string values (title/topic/author/body)', () => {
+    return request(app)
+    .get('/api/articles?sort_by=title')
+    .expect(200)
+    .then(({ body }) => {
+      const { articles } = body;
+      const articlesSorted = articles.toSorted((a, b) => {
+        return b.title.localeCompare(a.title);
+      });
+      expect(articles).toEqual(articlesSorted);
+    });
+  })
+  test('200: responds with an array of articles with order_by = ASC', () => {
+    return request(app)
+    .get('/api/articles?order_by=ASC')
+    .expect(200)
+    .then(({ body }) => {
+      const { articles } = body;
+      const articlesSorted = articles.toSorted((a, b) => {
+        return a.created_at - b.created_at;
+      });
+      expect(articles).toEqual(articlesSorted);
+    });
+  })
+});
+
 
 
 describe('404: return path not found for any non-specified url', () => {
