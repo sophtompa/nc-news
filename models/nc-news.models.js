@@ -8,10 +8,41 @@ const fetchTopics = () => {
     })
 };
 
-const fetchArticles = () => {
-    return db.query(`SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count FROM articles LEFT JOIN  comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY created_at DESC`)
+const fetchArticles = (query) => {
+    let queryString = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count FROM articles LEFT JOIN  comments ON articles.article_id = comments.article_id GROUP BY articles.article_id `
+    const queryParams = []
+
+    if(query['sort_by']) {
+        const sortByString = format(`ORDER BY articles.%I `, [query['sort_by']]);
+        queryString += sortByString;
+    }
+    else {
+        queryString += 'ORDER BY articles.created_at ';
+    }
+
+    if(query['order_by']) {
+        const orderVal = query['order_by']
+        queryString += orderVal
+    }
+    else {
+        const orderVal = 'DESC'
+        queryString += orderVal
+    }
+
+    const queries = Object.keys(query);
+    const allowedInputs = ['sort_by', 'order_by'];
+        queries.forEach((query) => {
+            if (!allowedInputs.includes(query)) {
+            throw new Error({ status: 404, msg: 'invalid input' });
+        }
+        })
+
+    return db.query(queryString, queryParams)
     .then(({rows}) => {
         return rows;
+    })
+    .catch((err) => {
+        next(err);
     })
 }
 
