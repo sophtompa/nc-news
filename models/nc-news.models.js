@@ -82,5 +82,12 @@ const removeComment = (comment_id) => {
     });
 }
 
+const fetchUsers = () => {
+    return db.query(`SELECT * FROM users`)
+    .then(({rows}) => {
+        console.log(rows)
+        return rows;
+    })
+};
 
-module.exports = { fetchTopics, fetchArticles, fetchArticleById, fetchCommentsByArticleId, sendComment, removeComment, updateArticle }
+module.exports = { fetchTopics, fetchArticles, fetchArticleById, fetchCommentsByArticleId, sendComment, removeComment, updateArticle, fetchUsers }
