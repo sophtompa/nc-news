@@ -85,7 +85,6 @@ const removeComment = (comment_id) => {
 const fetchUsers = () => {
     return db.query(`SELECT * FROM users`)
     .then(({rows}) => {
-        console.log(rows)
         return rows;
     })
 };
