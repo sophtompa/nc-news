@@ -9,8 +9,19 @@ const fetchTopics = () => {
 };
 
 const fetchArticles = (query) => {
-    let queryString = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count FROM articles LEFT JOIN  comments ON articles.article_id = comments.article_id GROUP BY articles.article_id `
+
+    let queryString = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT AS comment_count FROM articles LEFT JOIN  comments ON articles.article_id = comments.article_id `
     const queryParams = []
+    const promises = []
+
+    if (query.topic) {
+        queryString += 'WHERE articles.topic = $1 GROUP BY  articles.article_id ';
+        queryParams.push(query.topic);
+    }
+    else {
+        queryString += 'GROUP BY articles.article_id '
+    }
+    
 
     if(query['sort_by']) {
         const sortByString = format(`ORDER BY articles.%I `, [query['sort_by']]);
@@ -30,17 +41,16 @@ const fetchArticles = (query) => {
     }
 
     const queries = Object.keys(query);
-    const allowedInputs = ['sort_by', 'order_by'];
+    const allowedInputs = ['sort_by', 'order_by', 'topic'];
         queries.forEach((query) => {
             if (!allowedInputs.includes(query)) {
             throw new Error({ status: 404, msg: 'invalid input' });
         }
         })
-
-    return db.query(queryString, queryParams)
-    .then(({rows}) => {
-        return rows;
-    })
+        return db.query(queryString, queryParams)
+        .then(({rows}) => {
+        return rows
+        })
     .catch((err) => {
         next(err);
     })
