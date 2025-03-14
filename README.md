@@ -4,7 +4,7 @@
 
 #### This project showcases the backend of a Node.js news app, which uses PostgreSQL to send/retrieve data from the database. 
 #### Features include the ability to search for users and articles, to post/delete comments on articles, and to update articles.
-#### Link to hosted the version: https://sophtompa-nc-news.onrender.com
+#### Link to the hosted version: https://sophtompa-nc-news.onrender.com
 
 ## Setup Instructions
 
@@ -15,14 +15,14 @@ Firstly, clone the repo to your device, using the command ```git clone```.
 To set up and seed the database, run the command ```npm run setup-dbs```, followed by ```npm run seed-dev```.
 To run the seed in the production environment, run the command ```npm run seed-prod```.
 
-### Setup .env
+### Setup .env files
 Create a file named '.env.dev'.
 Populate this with the ENV variable 'PGDATABASE=nc_news'.
 
 Create a file named '.env.test'.
 Populate this with the ENV variable 'PGDATABASE=nc_news_test'.
 
-Include ALL .env files in .gitignore.
+Include both .env files in .gitignore
 
 ## Required Installations
 
