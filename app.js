@@ -1,9 +1,12 @@
+const cors = require('cors')
 const express = require('express');
 const app = express();
 const db = require("./db/connection.js")
 const endpoints = require("./endpoints.json")
 const { getEndpoints, getTopics, getArticles, getArticleById, getCommentsByArticleId, postComment, patchArticle, deleteComment, getUsers, pathNotFound } = require("./controllers/nc-news.controllers.js")
 const { handlePsqlError, handleCustomError, handleServerError } = require('./controllers/errors.controller.js');
+
+app.use(cors());
 
 app.use(express.json());
 
